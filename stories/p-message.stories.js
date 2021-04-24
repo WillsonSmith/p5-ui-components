@@ -22,7 +22,11 @@ const Template = (args) => {
       style="width: 100%; height: 800px; background: #B40001; padding: 1rem; box-sizing: border-box;"
     >
       <div style="max-width: 60rem; margin: 0 auto">
-        <p-message style="display: inline-block;">${args.message}</p-message>
+        <p-message
+          ?exclamation=${args.exclamation}
+          style="display: inline-block;"
+          >${args.message}</p-message
+        >
       </div>
     </div>
   `;
@@ -31,6 +35,7 @@ const Template = (args) => {
 export const Basic = Template.bind({});
 Basic.args = {
   message: "This is the content of my message!",
+  exclamation: false,
 };
 
 export const WithLongText = Template.bind({});

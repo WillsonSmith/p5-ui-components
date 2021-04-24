@@ -21,6 +21,7 @@ class PMessage extends LitElement {
       }
 
       .Message {
+        position: relative;
         padding: var(--matting-padding);
       }
       .Content {
@@ -36,6 +37,8 @@ class PMessage extends LitElement {
   static get properties() {
     return {
       image: { attribute: "image", type: String },
+      exclamation: { type: Boolean },
+      question: { type: Boolean },
     };
   }
 
@@ -60,7 +63,6 @@ class PMessage extends LitElement {
               </div>
             </div>
           </p-box>
-          <!-- <div class="Exclaimer"></div> -->
         </div>
       </p-box>
     `;
