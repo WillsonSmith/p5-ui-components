@@ -30,7 +30,6 @@ class PMessage extends LitElement {
         padding: var(--matting-padding);
       }
       .Content {
-        position: relative;
         color: var(--message-text-color);
       }
 
