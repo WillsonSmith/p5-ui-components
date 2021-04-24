@@ -109,7 +109,6 @@ class PMessage extends LitElement {
 
     this.resizeObserver = new ResizeObserver((entries) => {
       for (const entry of entries) {
-        console.log(entry);
         const { width, height } = entry.contentRect;
         if (entry.target === this.contentNode) {
           this.resizeContent(width, height);
