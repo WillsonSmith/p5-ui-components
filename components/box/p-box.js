@@ -38,6 +38,7 @@ class PBox extends LitElement {
   disconnectedCallback() {
     super.disconnectedCallback();
     this.resizeObserver.unobserve(this);
+    if (this.resizeTimeout) window.cancelAnimationFrame(this.resizeTimeout);
   }
 
   constructor() {
