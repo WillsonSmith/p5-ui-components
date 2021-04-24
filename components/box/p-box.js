@@ -2,7 +2,25 @@ import { LitElement, html, css } from "lit-element";
 
 class PBox extends LitElement {
   static get styles() {
-    return css``;
+    return css`
+      :host {
+        --box-color: transparent;
+        position: relative;
+        display: block;
+      }
+
+      svg {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        overflow: visible;
+        fill: var(--box-color);
+      }
+
+      .Content {
+        position: relative;
+      }
+    `;
   }
 
   static get properties() {
@@ -10,7 +28,18 @@ class PBox extends LitElement {
       width: Number,
       height: Number,
       coordinates: { attribute: false },
+      transformer: { attribute: false },
     };
+  }
+
+  connectedCallback() {
+    super.connectedCallback();
+    this.resizeObserver.observe(this);
+  }
+
+  disconnectedCallback() {
+    super.disconnectedCallback();
+    this.resizeObserver.unobserve(this);
   }
 
   constructor() {
@@ -25,14 +54,16 @@ class PBox extends LitElement {
         }
       }
     });
+
+    this.handleUpdateSize = this.handleUpdateSize.bind(this);
   }
 
   render() {
     return html`
-      <div>
-        <svg xmlns="http://www.w3.org/2000/svg">
-          <path d=${this.box} />
-        </svg>
+      <svg xmlns="http://www.w3.org/2000/svg">
+        <path d=${this.box} />
+      </svg>
+      <div class="Content">
         <slot></slot>
       </div>
     `;

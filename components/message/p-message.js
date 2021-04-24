@@ -186,8 +186,6 @@ class PMessage extends LitElement {
   }
 }
 
-customElements.define("p-message", PMessage);
-
 function coordinatesToSvgPath(coordinates) {
   return coordinates
     .map((coordinate, index) => {
@@ -196,3 +194,4 @@ function coordinatesToSvgPath(coordinates) {
     })
     .join(" ");
 }
+customElements.define("p-message", PMessage);
