@@ -1,5 +1,7 @@
 import { LitElement, html, css } from "lit-element";
 
+// Make the box a component
+// Message is a box nested in a box
 class PMessage extends LitElement {
   static get styles() {
     return css`
@@ -84,6 +86,7 @@ class PMessage extends LitElement {
     };
   }
 
+  // these suck
   resize(width, height) {
     if (this.resizeTimeout) window.cancelAnimationFrame(this.resizeTimeout);
     this.resizeTimeout = window.requestAnimationFrame(() => {
@@ -107,6 +110,7 @@ class PMessage extends LitElement {
     this.contentWidth = 0;
     this.contentHeight = 0;
 
+    // possibly extract this - make constructor easier to read
     this.resizeObserver = new ResizeObserver((entries) => {
       for (const entry of entries) {
         const { width, height } = entry.contentRect;
@@ -127,6 +131,8 @@ class PMessage extends LitElement {
     this.contentNode = this.shadowRoot.querySelector(".Content");
     this.resizeObserver.observe(this.contentNode);
   }
+
+  // update for if/when text content changes - if has !, ?, or ?! add floatie
 
   connectedCallback() {
     super.connectedCallback();
@@ -154,6 +160,7 @@ class PMessage extends LitElement {
             </div>
           </div>
         </div>
+        <!-- <div class="Exclaimer"></div> -->
       </div>
     `;
   }
