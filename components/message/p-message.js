@@ -107,6 +107,7 @@ class PMessage extends LitElement {
     this.contentWidth = 0;
     this.contentHeight = 0;
     this.resizeObserver = new ResizeObserver((entries) => {
+      // possibly batch these and call resize once
       for (const entry of entries) {
         const { width, height } = entry.contentRect;
         if (entry.target === this.contentNode) {
@@ -137,6 +138,7 @@ class PMessage extends LitElement {
   }
 
   render() {
+    // these values need to not be bad, do some real maths
     return html`
       <div class="Message">
         <svg xmlns="http://www.w3.org/2000/svg">
@@ -154,10 +156,10 @@ class PMessage extends LitElement {
             <svg xmlns="http://www.w3.org/2000/svg">
               <path
                 d=${`
-                  M${this.contentHeight * 0.02} 0
+                  M${this.contentWidth * 0.01} ${this.contentHeight * 0.05}
                   L ${this.contentWidth * 1.02} ${this.contentHeight * -0.1}
                   L ${this.contentWidth * 0.99} ${this.contentHeight} 
-                  L ${this.contentWidth * -0.02} ${this.contentHeight * 0.98}
+                  L ${this.contentWidth * -0.01} ${this.contentHeight * 0.98}
                 `}
               />
             </svg>
