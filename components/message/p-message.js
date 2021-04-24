@@ -1,19 +1,13 @@
 import { LitElement, html, css } from "lit-element";
-
 import "../box/p-box.js";
 
 class PMessage extends LitElement {
   static get styles() {
     return css`
-      @font-face {
-        font-family: "Persona 5";
-        src: url("../../fonts/p5hatty.ttf");
-      }
       :host {
         --message-matting: rgba(255, 255, 255, 1);
         --message-background: rgba(0, 0, 0, 1);
         --message-text-color: rgba(255, 255, 255, 1);
-        --font-family: "Persona 5";
         --matting-padding: 0.2rem;
         --message-padding: 1rem;
         display: block;
