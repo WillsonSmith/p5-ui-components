@@ -167,7 +167,7 @@ class PMessage extends LitElement {
       { x: this.width, y: this.height * 1.1 },
       { x: this.width * -0.02, y: this.height },
     ];
-    return mapCoordinatesToString(coordinates);
+    return coordinatesToSvgPath(coordinates);
   }
   get contentBox() {
     const coordinates = [
@@ -176,13 +176,13 @@ class PMessage extends LitElement {
       { x: this.contentWidth * 0.99, y: this.contentHeight },
       { x: this.contentWidth * -0.01, y: this.contentHeight * 0.98 },
     ];
-    return mapCoordinatesToString(coordinates);
+    return coordinatesToSvgPath(coordinates);
   }
 }
 
 customElements.define("p-message", PMessage);
 
-function mapCoordinatesToString(coordinates) {
+function coordinatesToSvgPath(coordinates) {
   return coordinates
     .map((coordinate, index) => {
       const type = index === 0 ? "M" : "L";
