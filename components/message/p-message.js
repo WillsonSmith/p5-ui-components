@@ -1,7 +1,7 @@
 import { LitElement, html, css } from "lit-element";
 
-// Make the box a component
-// Message is a box nested in a box
+import "../box/p-box.js";
+
 class PMessage extends LitElement {
   static get styles() {
     return css`
@@ -27,51 +27,15 @@ class PMessage extends LitElement {
       }
 
       .Message {
-        position: relative;
-      }
-      .Message::before {
-        content: "";
-        position: absolute;
-        top: 0;
-        right: 0;
-        bottom: 0;
-        left: 0;
-
-        transform: rotateY(-1.54deg) skewX(-12.93deg);
+        padding: var(--matting-padding);
       }
       .Content {
         position: relative;
         color: var(--message-text-color);
       }
 
-      .Content-Container {
-        padding: var(--matting-padding);
-      }
-
-      .Content::before {
-        content: "";
-        position: absolute;
-        top: 0;
-        right: 0;
-        bottom: 0;
-        left: 0;
-      }
-
       .Text {
-        position: relative;
         padding: var(--message-padding);
-      }
-
-      .Message svg {
-        position: absolute;
-        width: 100%;
-        height: 100%;
-        fill: var(--message-matting);
-
-        overflow: visible;
-      }
-      .Content svg {
-        fill: var(--message-background);
       }
     `;
   }
@@ -79,119 +43,60 @@ class PMessage extends LitElement {
   static get properties() {
     return {
       image: { attribute: "image", type: String },
-      width: Number,
-      height: Number,
-      contentWidth: Number,
-      contentHeight: Number,
     };
-  }
-
-  // these suck
-  resize(width, height) {
-    if (this.resizeTimeout) window.cancelAnimationFrame(this.resizeTimeout);
-    this.resizeTimeout = window.requestAnimationFrame(() => {
-      this.width = width;
-      this.height = height;
-    });
-  }
-
-  resizeContent(width, height) {
-    if (this.resizeTimeout2) window.cancelAnimationFrame(this.resizeTimeout2);
-    this.resizeTimeout2 = window.requestAnimationFrame(() => {
-      this.contentWidth = width;
-      this.contentHeight = height;
-    });
   }
 
   constructor() {
     super();
-    this.width = 0;
-    this.height = 0;
-    this.contentWidth = 0;
-    this.contentHeight = 0;
-
-    // possibly extract this - make constructor easier to read
-    this.resizeObserver = new ResizeObserver((entries) => {
-      for (const entry of entries) {
-        const { width, height } = entry.contentRect;
-        if (entry.target === this.contentNode) {
-          this.resizeContent(width, height);
-        }
-        if (entry.target === this) {
-          this.resize(width, height);
-        }
-      }
-    });
-
-    this.resize = this.resize.bind(this);
-    this.resizeContent = this.resizeContent.bind(this);
-  }
-
-  firstUpdated() {
-    this.contentNode = this.shadowRoot.querySelector(".Content");
-    this.resizeObserver.observe(this.contentNode);
-  }
-
-  // update for if/when text content changes - if has !, ?, or ?! add floatie
-
-  connectedCallback() {
-    super.connectedCallback();
-    this.resizeObserver.observe(this);
-  }
-
-  disconnectedCallback() {
-    super.disconnectedCallback();
   }
 
   render() {
-    // these values need to not be bad, do some real maths
     return html`
-      <div class="Message">
-        <svg xmlns="http://www.w3.org/2000/svg">
-          <path d=${this.wrapperBox} />
-        </svg>
-        <div class="Content-Container">
-          <div class="Content">
-            <svg xmlns="http://www.w3.org/2000/svg">
-              <path d=${this.contentBox} />
-            </svg>
-            <div class="Text">
-              <slot></slot>
+      <p-box
+        .transformer=${transformContainerCoordinates}
+        style="--box-color: var(--message-matting)"
+      >
+        <div class="Message">
+          <p-box
+            .transformer=${transformContentCoordinates}
+            style="--box-color: var(--message-background)"
+          >
+            <div class="Content">
+              <div class="Text">
+                <slot></slot>
+              </div>
             </div>
-          </div>
+          </p-box>
+          <!-- <div class="Exclaimer"></div> -->
         </div>
-        <!-- <div class="Exclaimer"></div> -->
-      </div>
+      </p-box>
     `;
   }
-
-  get wrapperBox() {
-    // this could probably all be done in the resizeObserver? idk
-    const coordinates = [
-      { x: 0, y: 0 },
-      { x: this.width * 1.05, y: this.height * -0.1 },
-      { x: this.width, y: this.height * 1.1 },
-      { x: this.width * -0.02, y: this.height },
-    ];
-    return coordinatesToSvgPath(coordinates);
-  }
-  get contentBox() {
-    const coordinates = [
-      { x: this.contentWidth * 0.01, y: this.contentHeight * 0.05 },
-      { x: this.contentWidth * 1.02, y: this.contentHeight * -0.1 },
-      { x: this.contentWidth * 0.99, y: this.contentHeight },
-      { x: this.contentWidth * -0.01, y: this.contentHeight * 0.98 },
-    ];
-    return coordinatesToSvgPath(coordinates);
-  }
 }
 
-function coordinatesToSvgPath(coordinates) {
-  return coordinates
-    .map((coordinate, index) => {
-      const type = index === 0 ? "M" : "L";
-      return `${type} ${coordinate.x} ${coordinate.y}`;
-    })
-    .join(" ");
+function transformContentCoordinates(coordinates) {
+  const [, tr, br] = coordinates;
+  const width = tr.x;
+  const height = br.y;
+  return [
+    { x: width * 0.01, y: height * 0.05 },
+    { x: width * 1.02, y: height * -0.1 },
+    { x: width * 0.99, y: br.y },
+    { x: width * -0.01, y: height * 0.98 },
+  ];
 }
+
+function transformContainerCoordinates(coordinates) {
+  const [tl, tr, br, bl] = coordinates;
+  const width = tr.x;
+  const height = br.y;
+  // might want to add w/h to this
+  return [
+    tl,
+    { x: width * 1.05, y: height * -0.1 },
+    { x: br.x, y: height * 1.1 },
+    { x: width * -0.02, y: bl.y },
+  ];
+}
+
 customElements.define("p-message", PMessage);
