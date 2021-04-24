@@ -141,14 +141,24 @@ class PMessage extends LitElement {
       <div class="Message">
         <svg xmlns="http://www.w3.org/2000/svg">
           <path
-            d=${`M0 0 L ${this.width} 0 L ${this.width} ${this.height} L 0 ${this.height}`}
+            d=${`
+              M0 0
+              L ${this.width * 1.05} ${this.height * -0.1}
+              L ${this.width} ${this.height * 1.1} 
+              L ${this.width * -0.02} ${this.height}
+            `}
           />
         </svg>
         <div class="Content-Container">
           <div class="Content">
             <svg xmlns="http://www.w3.org/2000/svg">
               <path
-                d=${`M0 0 L ${this.contentWidth} 0 L ${this.contentWidth} ${this.contentHeight} L 0 ${this.contentHeight}`}
+                d=${`
+                  M${this.contentHeight * 0.02} 0
+                  L ${this.contentWidth * 1.02} ${this.contentHeight * -0.1}
+                  L ${this.contentWidth * 0.99} ${this.contentHeight} 
+                  L ${this.contentWidth * -0.02} ${this.contentHeight * 0.98}
+                `}
               />
             </svg>
             <div class="Text">

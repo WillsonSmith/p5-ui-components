@@ -21,7 +21,9 @@ const Template = () => {
     <div
       style="width: 100%; height: 800px; background: #B40001; padding: 1rem; box-sizing: border-box;"
     >
-      <p-message>Some text here</p-message>
+      <p-message style="display: inline-block;"
+        >This is the content of my message!</p-message
+      >
     </div>
   `;
 };
