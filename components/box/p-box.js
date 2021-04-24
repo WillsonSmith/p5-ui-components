@@ -25,8 +25,6 @@ class PBox extends LitElement {
 
   static get properties() {
     return {
-      width: Number,
-      height: Number,
       coordinates: { attribute: false },
       transformer: { attribute: false },
     };
