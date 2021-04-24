@@ -106,9 +106,10 @@ class PMessage extends LitElement {
     this.height = 0;
     this.contentWidth = 0;
     this.contentHeight = 0;
+
     this.resizeObserver = new ResizeObserver((entries) => {
-      // possibly batch these and call resize once
       for (const entry of entries) {
+        console.log(entry);
         const { width, height } = entry.contentRect;
         if (entry.target === this.contentNode) {
           this.resizeContent(width, height);
@@ -142,26 +143,12 @@ class PMessage extends LitElement {
     return html`
       <div class="Message">
         <svg xmlns="http://www.w3.org/2000/svg">
-          <path
-            d=${`
-              M0 0
-              L ${this.width * 1.05} ${this.height * -0.1}
-              L ${this.width} ${this.height * 1.1} 
-              L ${this.width * -0.02} ${this.height}
-            `}
-          />
+          <path d=${this.wrapperBox} />
         </svg>
         <div class="Content-Container">
           <div class="Content">
             <svg xmlns="http://www.w3.org/2000/svg">
-              <path
-                d=${`
-                  M${this.contentWidth * 0.01} ${this.contentHeight * 0.05}
-                  L ${this.contentWidth * 1.02} ${this.contentHeight * -0.1}
-                  L ${this.contentWidth * 0.99} ${this.contentHeight} 
-                  L ${this.contentWidth * -0.01} ${this.contentHeight * 0.98}
-                `}
-              />
+              <path d=${this.contentBox} />
             </svg>
             <div class="Text">
               <slot></slot>
@@ -171,6 +158,35 @@ class PMessage extends LitElement {
       </div>
     `;
   }
+
+  get wrapperBox() {
+    // this could probably all be done in the resizeObserver? idk
+    const coordinates = [
+      { x: 0, y: 0 },
+      { x: this.width * 1.05, y: this.height * -0.1 },
+      { x: this.width, y: this.height * 1.1 },
+      { x: this.width * -0.02, y: this.height },
+    ];
+    return mapCoordinatesToString(coordinates);
+  }
+  get contentBox() {
+    const coordinates = [
+      { x: this.contentWidth * 0.01, y: this.contentHeight * 0.05 },
+      { x: this.contentWidth * 1.02, y: this.contentHeight * -0.1 },
+      { x: this.contentWidth * 0.99, y: this.contentHeight },
+      { x: this.contentWidth * -0.01, y: this.contentHeight * 0.98 },
+    ];
+    return mapCoordinatesToString(coordinates);
+  }
 }
 
 customElements.define("p-message", PMessage);
+
+function mapCoordinatesToString(coordinates) {
+  return coordinates
+    .map((coordinate, index) => {
+      const type = index === 0 ? "M" : "L";
+      return `${type} ${coordinate.x} ${coordinate.y}`;
+    })
+    .join(" ");
+}
